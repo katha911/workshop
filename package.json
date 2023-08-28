@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:check": "./node_modules/.bin/cypress verify",
+    "lint:check": "eslint cypress --color",
+    "prettier:check": "prettier --list-different 'cypress/**/*.{js,ts,json}'",
+    "cypress:runTest": "./node_modules/.bin/cypress install && cypress run  --browser chrome"
   },
   "author": "",
   "license": "ISC",
