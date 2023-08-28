@@ -3,7 +3,7 @@ name: E2E Testing (Develop)
 on:
   push:
     branches:
-      - develop
+      - master
   repository_dispatch:
     types: trigger_internal
   schedule:
