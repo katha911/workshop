@@ -1,4 +1,4 @@
-name: E2E Testing (Develop)
+name: E2E Testing
 
 on:
   push:
@@ -14,9 +14,8 @@ env:
 
 jobs:
   e2e:
-    name: E2E testing (Develop)
+    name: E2E testing
     runs-on: ubuntu-latest
-    #runs-on: [self-hosted, fanz]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
@@ -34,7 +33,7 @@ jobs:
       - name: Install
         run: |
           npm install
-      - name: E2E Testing Develop
+      - name: E2E Testing
         run: npm run cypress:runTest
       - name: Send notification to slack
         uses: 8398a7/action-slack@v2
@@ -46,7 +45,7 @@ jobs:
             ${{steps.setup.outputs.BRANCH_NAME}}-${{steps.setup.outputs.DATE}}
           text:
             'Can check report at:
-            http://fanz-automated-report.s3-website.eu-central-1.amazonaws.com/${{steps.setup.outputs.PROJECT}}/index.html'
+            https://20scoopscnx.com/'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
