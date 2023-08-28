@@ -1,0 +1,52 @@
+name: E2E Testing (Develop)
+
+on:
+  push:
+    branches:
+      - develop
+  repository_dispatch:
+    types: trigger_internal
+  schedule:
+    - cron: '0 0 * * *'
+
+env:
+  CYPRESS_CI: true
+
+jobs:
+  e2e:
+    name: E2E testing (Develop)
+    runs-on: ubuntu-latest
+    #runs-on: [self-hosted, fanz]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.6.x
+      - name: Setup
+        if: success() || failure()
+        id: setup
+        run: |
+          TODAY_DATE=`date +"%d.%m.%y"`
+          echo "::set-output name=DATE::$TODAY_DATE"
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "::set-output name=BRANCH_NAME::$BRANCH_NAME"
+          echo "::set-output name=PROJECT::develop/$TODAY_DATE"
+      - name: Install
+        run: |
+          npm install
+      - name: E2E Testing Develop
+        run: npm run cypress:runTest
+      - name: Send notification to slack
+        uses: 8398a7/action-slack@v2
+        if: success() || failure()
+        with:
+          status: ${{ job.status }}
+          author_name:
+            (Develop)Tester report
+            ${{steps.setup.outputs.BRANCH_NAME}}-${{steps.setup.outputs.DATE}}
+          text:
+            'Can check report at:
+            http://fanz-automated-report.s3-website.eu-central-1.amazonaws.com/${{steps.setup.outputs.PROJECT}}/index.html'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
